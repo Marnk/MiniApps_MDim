@@ -9,12 +9,25 @@ App({
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        wx.getUserInfo({
-          success: (res) => {
-            var simpleUser = res.userInfo;
-            console.log(simpleUser.nickName);
-          }
-        });
+        if (res.code) {
+          //发起网络请求
+          wx.request({
+            url: 'http://192.168.1.181',
+            data: {
+              code: res.code
+            },
+            header: {
+              'content-type' : 'application/json', // 默认值
+              'x-requested-with' : 'xmlhttprequest'
+            },
+            success: (res) => {
+              console.log(res.data)
+            }
+          })
+        } else {
+          console.log('登录失败！' + res.errMsg)
+        }
+        
       }
     })
     // 获取用户信息
